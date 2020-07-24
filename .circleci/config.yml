@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.14
+    working_directory: /go/src/github.com/angeliski/urano
+
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - run:
+          name: install linter
+          command: go get -u golang.org/x/lint/golint    
+      - checkout
+      - run:
+          name: Setup git fetching with SSH
+          command: |
+            git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+      - run: mkdir -p $TEST_RESULTS
+      - run:
+          name: "Enforce Go Formatted Code"
+          command: "! go fmt ./... 2>&1 | read"
+      - run:
+          name: Run vet
+          command: make vet  | tee  ${TEST_RESULTS}/go-vet.out
+      - run:
+          name: Run lint
+          command: make lint | tee  ${TEST_RESULTS}/go-lint.out
+      - run:
+          name: Run unit and integration tests
+          command: make test-all | tee  ${TEST_RESULTS}/go-test.out
+
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: raw-test-output
+
+      - store_test_results:
+          path: /tmp/test-results

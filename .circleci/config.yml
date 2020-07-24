@@ -40,7 +40,7 @@ jobs:
             make test | tee c.out
             ./cc-test-reporter after-build --coverage-input-type gocov --exit-code $?
 
-      - run: go tool cover -html=${TEST_RESULTS}/go-test.out -o {TEST_RESULTS}/coverage_profile.html
+      - run: go tool cover -html=${TEST_RESULTS}/c.out -o {TEST_RESULTS}/coverage_profile.html
       - store_artifacts:
           path: ${TEST_RESULTS}
           destination: raw-test-output

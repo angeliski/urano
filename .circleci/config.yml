@@ -37,7 +37,7 @@ jobs:
           name: Run unit and integration tests
           command: |
             ./cc-test-reporter before-build
-            make test | tee c.out
+            make test
             ./cc-test-reporter after-build --coverage-input-type gocov --exit-code $?
 
       - run: go tool cover -html=${TEST_RESULTS}/c.out -o {TEST_RESULTS}/coverage_profile.html

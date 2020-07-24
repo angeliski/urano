@@ -19,10 +19,10 @@ lint: ## Lint the code.
 test: test-unit test-integration
 
 test-unit: ## Run unit tests.
-	go test -race -cover -p 1
+	go test -race -cover -p 1 -coverprofile=c.out
 
 test-integration: ## Run unit and integration tests
-	go test ./... -race -tags integration -cover -p 1
+	go test ./... -race -tags integration -cover -p 1 -coverprofile=c.out
 
 vet: ## Vet the code
 	go vet $(CHECK_FILES)

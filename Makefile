@@ -16,10 +16,12 @@ build: ## Build the binary.
 lint: ## Lint the code.
 	golint -set_exit_status $(CHECK_FILES)
 
-test: ## Run unit tests.
+test: test-unit test-integration
+
+test-unit: ## Run unit tests.
 	go test -race -cover -p 1 -v $(CHECK_FILES)
 
-test-all: ## Run unit and integration tests
+test-integration: ## Run unit and integration tests
 	go test ./... -race -tags integration -cover -p 1
 
 vet: ## Vet the code

@@ -16,6 +16,13 @@ jobs:
           name: Setup git fetching with SSH
           command: |
             git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+            mv test-reporter-latest-linux-amd64 cc-test-reporter
+            chmod +x ./cc-test-reporter
       - run: mkdir -p $TEST_RESULTS
       - run:
           name: "Enforce Go Formatted Code"
@@ -28,11 +35,12 @@ jobs:
           command: make lint | tee  ${TEST_RESULTS}/go-lint.out
       - run:
           name: Run unit and integration tests
-          command: make test-all | tee  ${TEST_RESULTS}/go-test.out
+          command: |
+            ./cc-test-reporter before-build
+            make test | tee  ${TEST_RESULTS}/go-test.out
+            ./cc-test-reporter after-build --coverage-input-type gocov --exit-code $?
 
+      - run: go tool cover -html=${TEST_RESULTS}/go-test.out -o {TEST_RESULTS}/cover.html
       - store_artifacts:
-          path: /tmp/test-results
-          destination: raw-test-output
-
-      - store_test_results:
-          path: /tmp/test-results
+          path: /tmp/test-results/cover.html
+          destination: coverage_profile.html

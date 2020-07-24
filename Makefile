@@ -19,7 +19,7 @@ lint: ## Lint the code.
 test: test-unit test-integration
 
 test-unit: ## Run unit tests.
-	go test -race -cover -p 1 -v $(CHECK_FILES)
+	go test -race -cover -p 1
 
 test-integration: ## Run unit and integration tests
 	go test ./... -race -tags integration -cover -p 1
